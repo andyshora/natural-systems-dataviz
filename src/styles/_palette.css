@@ -1,0 +1,122 @@
+/** Colour definitions **/
+$primary-1: rgb(0, 117, 185);
+$primary-2: rgb(0, 157, 249);
+$positive: rgb(38, 192, 34);
+$negative: rgb(255, 25, 25);
+$mid: rgb(255, 159, 0);
+$white: rgb(255, 255, 255);
+/** not used, modify at will */
+$grey-1: rgb(10, 10, 10);
+/** not used, modify at will */
+$grey-2: rgb(50, 50, 50);
+/** not used, modify at will */
+$grey-3: rgb(100, 100, 100);
+/** not used, modify at will */
+$grey-4: rgb(150, 150, 150);
+$grey-5: rgb(224, 224, 224);
+$grey-6: rgb(244, 245, 246);
+$grey-7: rgb(251, 251, 251);
+
+/* Styleguide Colors from Zeplin */
+$azure: rgb(0, 157, 249);
+$bright-magenta: rgb(255, 0, 222);
+$marigold: rgb(255, 193, 7);
+$turqoise-blue: rgb(0, 196, 194);
+$white: rgb(255, 255, 255);
+$black: rgb(0, 0, 0);
+$ocean-blue: rgb(0, 117, 185);
+$dark-blue-grey: rgb(29, 49, 73);
+
+$color-impact-positive: rgb(38,192,34);
+$color-impact-negative: rgb(255,25,25);
+
+
+$color-cat-0: $azure;
+$color-cat-1: $bright-magenta;
+$color-cat-2: $marigold;
+$color-cat-3: $turqoise-blue;
+$color-cat-4: $turqoise-blue;
+$color-cat-5: $turqoise-blue;
+
+$color-cat-0--inactive: rgb(28, 92, 137);
+$color-cat-1--inactive: rgb(112, 27, 125);
+$color-cat-2--inactive: rgb(92, 93, 41);
+$color-cat-3--inactive: rgb(26, 113, 122);
+$color-cat-4--inactive: rgb(0, 106, 74);
+$color-cat-5--inactive: rgb(0, 106, 74);
+
+$color-cat-0--inactive-fill: rgb(28, 61, 87);
+$color-cat-1--inactive-fill: rgb(60, 38, 86);
+$color-cat-2--inactive-fill: rgb(53, 63, 49);
+$color-cat-3--inactive-fill: rgb(21, 61, 75);
+$color-cat-4--inactive-fill: rgb(0, 106, 74);
+$color-cat-5--inactive-fill: rgb(0, 106, 74);
+
+$color-blues-1: rgb(0, 23, 31);
+$color-blues-2: rgb(30, 33, 38);
+$color-blues-3: rgb(36, 37, 41);
+$color-blues-4: rgb(0, 32, 51);
+$color-blues-5: rgb(5, 89, 138);
+$color-blues-6: rgb(40, 47, 55);
+$color-blues-7: rgb(32, 40, 48);
+$color-blues-8: rgba(43, 48, 56, 0.5);
+
+$color-label-inactive: rgb(153, 153, 153);
+$color-label-active: rgb(255, 255, 255);
+
+$color-table-border: rgba(255, 255, 255, 0.12);
+$color-table-border-active: rgba(255, 255, 255, 0.1);
+$color-impact-bar-border: rgba(255, 255, 255, 0.2);
+
+$color-text-default: rgba(0, 0, 0, 0.87);
+$color-text-light: rgb(141, 146, 156);
+
+$color-primary-one: rgb(0, 114, 206);
+$color-primary-two: rgb(31, 38, 49);
+$color-primary-three: rgb(0, 141, 223);
+
+$color-row-hover: rgb(36, 37, 41);
+$color-row-active: $color-blues-3;
+
+$color-link: rgb(0, 157, 249);
+$color-light-hover: rgb(128, 213, 255);
+
+$color-dark-one: rgb(51, 51, 51);
+$color-dark-two: rgb(0, 21, 33);
+
+$color-select-active: $color-dark-one;
+$color-select-inactive: $color-dark-one;
+
+$color-grey-one: rgb(141, 146, 156);
+$color-grey-two: rgb(210, 210, 210);
+$color-grey-three: rgb(26, 26, 26);
+$color-grey-four: rgb(223,223,223);
+$color-grey-five: rgba(153,153,153, 0.1);
+$color-grey-six: rgb(102,102,102);
+$color-grey-seven: rgb(204,204,204);
+
+$color-white-one: rgba($white,  0.5);
+$color-white-two: rgba($white,  0.1);
+
+$color-border-dark: rgb(0, 13, 20);
+$color-nav-bg: $color-blues-3;
+$color-grid-header-bg: rgb(27, 28, 31);
+
+$color-chart-shift-background: rgba(255, 0, 0, 0.5);
+$color-chart-shift-border: $color-white-one;
+$color-chart-shift-gradient-start: rgba(0, 156, 249, 0.0);
+$color-chart-shift-gradient-end: rgba(0, 156, 249, 0.25);
+$color-chart-series-original: rgb(38, 84, 150);
+$color-chart-series-adjusted: $white;
+
+$color-controls-label: $color-white-one;
+$color-controls-border: $color-white-two;
+
+$color-chart-legend-original: rgba(38, 84, 150, 0.5);
+$color-chart-legend-adjusted: rgba(255, 255, 255, 0.05);
+
+$color-modal-bg: $color-blues-6;
+$color-modal-header-bg: $color-blues-3;
+$color-inspector-charts-bg: $color-blues-7;
+$color-inspector-bg: $color-blues-8;
+$color-grid-bg: $color-blues-8;

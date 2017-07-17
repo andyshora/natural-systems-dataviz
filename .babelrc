@@ -1,0 +1,25 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions", "safari >= 7"]
+      }
+    }],
+    "react"
+  ],
+  "plugins": [
+    "transform-es2015-modules-commonjs",
+    "transform-es2015-destructuring",
+    "transform-object-rest-spread"
+  ],
+  "env": {
+    "AVA": {
+      "plugins": [
+        ["babel-plugin-webpack-loaders", {
+          "config": "${CONFIG}",
+          "verbose": true
+        }]
+      ]
+    }
+  }
+}
