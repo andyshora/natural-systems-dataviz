@@ -83,6 +83,8 @@ class Canvas extends React.Component {
         break;
     }
 
+    radius = 5;
+
     let newAdditions = {
       male: 0,
       female: 0
@@ -258,6 +260,7 @@ class Canvas extends React.Component {
           <button data-number={10} data-type='exco' onClick={this._addThings}>Add Exco</button>
         </nav>
         <div className='container' id='canvas' ref={_container => { this._container = _container;}} />
+        <p className='source'>Analysis based on 2015 annual reports of companies listed on each country’ main index: CAC40, FTSE100, FTSE MIB, AEX, BEL20, GDAX supervisory boards, OMX, OBX, McKinsey Women Matter report.</p>
       </div>
     );
   }

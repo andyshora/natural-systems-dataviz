@@ -6,3 +6,15 @@
 
   background: white;
 }
+
+.source {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+
+  font-size: 10px;
+  font-style: italic;
+  text-align: right;
+
+  color: grey;
+}
