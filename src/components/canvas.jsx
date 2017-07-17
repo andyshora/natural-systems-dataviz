@@ -15,21 +15,38 @@ class Canvas extends React.Component {
 
     this.state = {
       width,
-      height
+      height,
+      activeCountryKey: 'uk'
     };
   }
   componentDidMount() {
 
     // the nodes representing lt and exec
-    let positionsInLevels = [1, 2, 5];
+    let positionsInLevels = [3, 10];
+
+    const { activeCountryKey } = this.state;
 
     const totalPositions = 8;
     const seekersPerTarget = 20;
 
     // probability of males and females targetting the levels (cumulative)
-    let probabilityOfAttraction = {
-      female: [0.1, 0.3, 1],
-      male: [0.4, 0.7, 1]
+    // source: https://www.msci.com/documents/10199/04b6f646-d638-4878-9c61-4eb91748a82b
+
+    let stats = {
+      female: {
+        overall: [0.17, 1],
+        us: [0.18, 1],
+        uk: [0.247, 1],
+        norway: [0.375, 1],
+        france: [0.34, 1]
+      },
+      male: {
+        overall: [0.83, 1],
+        us: [0.82, 1],
+        uk: [0.753, 1],
+        norway: [0.625, 1],
+        france: [0.66, 1]
+      }
     };
 
     // multid array to store targets
@@ -52,10 +69,14 @@ class Canvas extends React.Component {
             maxSpeed: 0,
             perlin: false,
             location: new Flora.Vector(x, y),
-            color: [100, 100, 100],
-            borderRadius: 0,
-            width: 50,
-            height: 1
+            color: [9, 0, 0],
+            borderColor: [255, 255, 255],
+            borderWidth: 2,
+            borderRadius: 100,
+            borderStyle: 'solid',
+            opacity: 0.5,
+            width: this.world.width / (numNodesInThisLevel * 3),
+            height: this.world.width / (numNodesInThisLevel * 3)
           });
           targets[level].push(target);
         }
@@ -69,29 +90,39 @@ class Canvas extends React.Component {
         const genderKey = male ? 'male': 'female';
         const color = male ? [0, 100, 255] : [255, 255, 0];
         const r = Math.random();
-        const probs = probabilityOfAttraction[genderKey];
+        const probs = stats[genderKey][activeCountryKey];
+        let radius = 0;
 
         // decide where agent will go
         if (r < probs[0]) {
           targetLevel = 0;
+          radius = 20;
         } else if (r < probs[1]) {
           targetLevel = 1;
-        } else if (r < probs[2]) {
-          targetLevel = 2;
-       }
+          radius = 10;
+        }
+      //   } else if (r < probs[2]) {
+      //     targetLevel = 2;
+      //     radius = 5;
+      //  }
 
         const targetsInLevel = positionsInLevels[targetLevel];
         const targetIndex = _.random(0, targetsInLevel - 1);
 
         this.add('Agent', {
           seekTarget: targets[targetLevel][targetIndex],
-          motorSpeed: 0.2 + _.random(0, 2, true),
+          motorSpeed: 0.5 + _.random(0, 0.5, true),
           location: new Flora.Vector((this.world.width / 2) - 100 + _.random(0, 200), this.world.height - 100),
           color,
           borderRadius: 10,
-          width: 5,
-          height: 5,
-          perlinAccelHigh: 0.075 + _.random(0, 0.1, true)
+          width: radius,
+          height: radius,
+          perlinAccelLow: -0.075 - _.random(0, 0.1, true),
+          perlinAccelHigh: 0.075 + _.random(0, 0.1, true),
+          flocking: true,
+          maxSteeringForce: 5 + _.random(0, 10, true),
+          cohesionStrength: 0.1,
+          separateStrength: 1.5
         });
       }
 
@@ -103,9 +134,8 @@ class Canvas extends React.Component {
    * @return {ReactElement} markup
    */
   render() {
-    return (
-      <div>.</div>
-    );
+    const { activeCountryKey } = this.state;
+    return <p>Board patricipation in {activeCountryKey}.</p>;
   }
 }
 
