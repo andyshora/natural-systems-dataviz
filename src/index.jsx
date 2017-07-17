@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import fetchJsonp from 'fetch-jsonp';
 import _ from 'lodash';
-// import Flora from 'florajs';
 
 import Canvas from './components/canvas';
 
@@ -38,18 +37,6 @@ class App extends React.Component {
       width: window.innerWidth,
       height: window.innerHeight
     });
-
-    // Flora.System.setup(function() {
-    //   this.add('World', {
-    //     gravity: new Flora.Vector(),
-    //     c: 0
-    //   });
-    //   this.add('Agent', {
-    //     followMouse: true
-    //   });
-    // });
-    // Flora.System.loop();
-
   }
   render() {
     const { width, height } = this.state;
