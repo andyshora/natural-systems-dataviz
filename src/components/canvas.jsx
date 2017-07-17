@@ -3,7 +3,9 @@ import _ from 'lodash';
 
 import './canvas.css';
 
-let worlds = [];
+let world = null;
+let targets = [];
+const positionsInLevels = [3, 10, 25];
 /**
  * Main Canvas
  */
@@ -16,24 +18,123 @@ class Canvas extends React.Component {
 
     const { width, height, stats } = props;
     this._handleCountryChange = this._handleCountryChange.bind(this);
+    this._addThings = this._addThings.bind(this);
+    targets = [];
 
     this.state = {
       width,
       height,
-      activeCountryKey: 'uk'
+      activeCountryKey: 'uk',
+      counts: {
+        workers: {
+          male: 0,
+          female: 0
+        },
+        board: {
+          male: 0,
+          female: 0
+        },
+        exco: {
+          male: 0,
+          female: 0
+        }
+      }
     };
   }
   componentDidMount() {
     this._initWorld();
+  }
+  _addThings(e) {
+
+    const num = Number.parseInt(e.target.getAttribute('data-number'));
+    const typeKey = e.target.getAttribute('data-type');
+
+    const w = world.width;
+    const h = world.height;
+
+    if (!(/workers|board|exco/.test(typeKey))){
+      return;
+    }
+
+    const { activeCountryKey } = this.state;
+    const { stats } = this.props;
+
+    let targetLevel = -1;
+    let radius = 5;
+    const probs = stats[activeCountryKey][typeKey];
+    let startX = (w / 2) - 100 + _.random(0, 200);
+    let startY = h - 100;
+
+    // establish vertical layer group for agents to target
+    switch (typeKey) {
+      case 'workers':
+        targetLevel = 2;
+        break;
+      case 'board':
+        targetLevel = 1;
+        radius = 10;
+        startY = h * 0.75;
+        break;
+      case 'exco':
+        targetLevel = 0;
+        radius = 20;
+        startX = w / 2;
+        startY = h / 2;
+        break;
+    }
+
+    let newAdditions = {
+      male: 0,
+      female: 0
+    };
+
+    for (let i = 0; i < num; i++) {
+
+      // probability will affect whether male / female
+      const rand = Math.random() * 100;
+      const male = rand > probs;
+      const genderKey = male ? 'male': 'female';
+      const color = male ? [0, 100, 255] : [255, 127, 80];
+
+      const targetsInLevel = positionsInLevels[targetLevel];
+      const targetIndex = _.random(0, targetsInLevel - 1);
+
+      Flora.System.add('Agent', {
+        seekTarget: targets[targetLevel][targetIndex],
+        motorSpeed: 0.5 + _.random(0, 0.5, true),
+        location: new Flora.Vector(startX, startY),
+        color,
+        borderRadius: 10,
+        width: radius,
+        height: radius,
+        perlinAccelLow: -0.075 - _.random(0, 0.1, true),
+        perlinAccelHigh: 0.075 + _.random(0, 0.1, true),
+        flocking: true,
+        maxSteeringForce: 5 + _.random(0, 10, true),
+        cohesionStrength: 0.1,
+        separateStrength: 1.5
+      });
+      newAdditions[genderKey]++;
+    }
+    this._addNewCounts(typeKey, newAdditions);
+  }
+  _addNewCounts(typeKey, newAdditions) {
+    let changes = {};
+    const existingCounts = this.state.counts;
+    changes[typeKey] = {
+      male: existingCounts[typeKey].male + newAdditions.male,
+      female: existingCounts[typeKey].female + newAdditions.female
+    };
+
+    this.setState({
+      counts: Object.assign(existingCounts, changes)
+    });
   }
   _initWorld() {
     const { activeCountryKey } = this.state;
     const { stats } = this.props;
 
     // the nodes representing lt and exec
-    let positionsInLevels = [3, 10];
-
-
     const totalPositions = 8;
     const seekersPerTarget = 20;
 
@@ -41,13 +142,14 @@ class Canvas extends React.Component {
     // source: https://www.msci.com/documents/10199/04b6f646-d638-4878-9c61-4eb91748a82b
 
     // multid array to store targets
-    let targets = _.map(positionsInLevels, () => []);
+    targets = _.map(positionsInLevels, () => []);
 
     let _container = this._container;
 
     const system = Flora.System.setup(function() {
-      let world = this.add('World', {
-        el: _container,
+      // this = System
+      world = this.add('World', {
+        el: document.getElementById('canvas'),
         gravity: new Flora.Vector(),
         c: 0,
         id: 'world',
@@ -64,6 +166,7 @@ class Canvas extends React.Component {
         for (let j = 0; j < numNodesInThisLevel; j++) {
           const x = (j + 1) * (w / (numNodesInThisLevel + 1));
           const y = (level + 1) * (h / (positionsInLevels.length + 1));
+          // this = System
           const target = this.add('Walker', {
             maxSpeed: 0,
             perlin: false,
@@ -81,7 +184,7 @@ class Canvas extends React.Component {
         }
       }
 
-      for (let k = 0; k < totalPositions * seekersPerTarget; k++) {
+      /*for (let k = 0; k < totalPositions * seekersPerTarget; k++) {
 
         let targetLevel = -1;
 
@@ -100,10 +203,6 @@ class Canvas extends React.Component {
           targetLevel = 1;
           radius = 10;
         }
-      //   } else if (r < probs[2]) {
-      //     targetLevel = 2;
-      //     radius = 5;
-      //  }
 
         const targetsInLevel = positionsInLevels[targetLevel];
         const targetIndex = _.random(0, targetsInLevel - 1);
@@ -123,7 +222,7 @@ class Canvas extends React.Component {
           cohesionStrength: 0.1,
           separateStrength: 1.5
         });
-      }
+      }*/
 
     });
     Flora.System.loop();
@@ -139,18 +238,26 @@ class Canvas extends React.Component {
    * @return {ReactElement} markup
    */
   render() {
-    const { activeCountryKey } = this.state;
+    const { activeCountryKey, counts } = this.state;
     return (
       <div>
-        <div className='container' ref={_container => { this._container = _container;}} />
-        <p>Board patricipation in {activeCountryKey}.</p>
-        <select onChange={this._handleCountryChange}>
-          <option selected={activeCountryKey === 'overall'} value='overall'>Overall</option>
-          <option selected={activeCountryKey === 'us'} value='us'>US</option>
-          <option selected={activeCountryKey === 'uk'} value='uk'>UK</option>
-          <option selected={activeCountryKey === 'france'} value='france'>France</option>
-          <option selected={activeCountryKey === 'norway'} value='norway'>Norway</option>
+        <p>Board participation in {activeCountryKey}.</p>
+        <p>Workers: {counts.workers.male} males, {counts.workers.female} females.</p>
+        <p>Board: {counts.board.male} males, {counts.board.female} females.</p>
+        <p>Exco: {counts.exco.male} males, {counts.exco.female} females.</p>
+        <select defaultValue={activeCountryKey} onChange={this._handleCountryChange}>
+          <option value='overall'>Overall</option>
+          <option value='us'>US</option>
+          <option value='uk'>UK</option>
+          <option value='france'>France</option>
+          <option value='norway'>Norway</option>
         </select>
+        <nav>
+          <button data-number={10} data-type='workers' onClick={this._addThings}>Add Workers</button>
+          <button data-number={10} data-type='board' onClick={this._addThings}>Add Board</button>
+          <button data-number={10} data-type='exco' onClick={this._addThings}>Add Exco</button>
+        </nav>
+        <div className='container' id='canvas' ref={_container => { this._container = _container;}} />
       </div>
     );
   }
