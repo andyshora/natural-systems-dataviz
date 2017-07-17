@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 
+let world = null;
 /**
  * Main Canvas
  */
@@ -12,6 +13,7 @@ class Canvas extends React.Component {
     super(props);
 
     const { width, height } = props;
+    this._handleCountryChange = this._handleCountryChange.bind(this);
 
     this.state = {
       width,
@@ -20,11 +22,14 @@ class Canvas extends React.Component {
     };
   }
   componentDidMount() {
+    this._initWorld();
+  }
+  _initWorld() {
+    const { activeCountryKey } = this.state;
 
     // the nodes representing lt and exec
     let positionsInLevels = [3, 10];
 
-    const { activeCountryKey } = this.state;
 
     const totalPositions = 8;
     const seekersPerTarget = 20;
@@ -52,10 +57,11 @@ class Canvas extends React.Component {
     // multid array to store targets
     let targets = _.map(positionsInLevels, () => []);
 
-    Flora.System.setup(function() {
-      this.world = this.add('World', {
+    const system = Flora.System.setup(function() {
+      world = this.add('World', {
         gravity: new Flora.Vector(),
-        c: 0
+        c: 0,
+        id: 'world'
       });
 
       // create targets
@@ -63,8 +69,8 @@ class Canvas extends React.Component {
         const level = i;
         const numNodesInThisLevel = positionsInLevels[level];
         for (let j = 0; j < numNodesInThisLevel; j++) {
-          const x = (j + 1) * (this.world.width / (numNodesInThisLevel + 1));
-          const y = (level + 1) * (this.world.height / (positionsInLevels.length + 1));
+          const x = (j + 1) * (world.width / (numNodesInThisLevel + 1));
+          const y = (level + 1) * (world.height / (positionsInLevels.length + 1));
           const target = this.add('Walker', {
             maxSpeed: 0,
             perlin: false,
@@ -75,8 +81,8 @@ class Canvas extends React.Component {
             borderRadius: 100,
             borderStyle: 'solid',
             opacity: 0.5,
-            width: this.world.width / (numNodesInThisLevel * 3),
-            height: this.world.width / (numNodesInThisLevel * 3)
+            width: world.width / (numNodesInThisLevel * 3),
+            height: world.width / (numNodesInThisLevel * 3)
           });
           targets[level].push(target);
         }
@@ -112,7 +118,7 @@ class Canvas extends React.Component {
         this.add('Agent', {
           seekTarget: targets[targetLevel][targetIndex],
           motorSpeed: 0.5 + _.random(0, 0.5, true),
-          location: new Flora.Vector((this.world.width / 2) - 100 + _.random(0, 200), this.world.height - 100),
+          location: new Flora.Vector((world.width / 2) - 100 + _.random(0, 200), world.height - 100),
           color,
           borderRadius: 10,
           width: radius,
@@ -129,13 +135,31 @@ class Canvas extends React.Component {
     });
     Flora.System.loop();
   }
+  _handleCountryChange(e) {
+    Flora.System.remove(world);
+
+    // this.setState({
+    //   activeCountryKey: e.target.value
+    // });
+  }
   /**
    * render - render the component
    * @return {ReactElement} markup
    */
   render() {
     const { activeCountryKey } = this.state;
-    return <p>Board patricipation in {activeCountryKey}.</p>;
+    return (
+      <div>
+        <p>Board patricipation in {activeCountryKey}.</p>
+        <select onChange={this._handleCountryChange}>
+          <option value='overall'>Overall</option>
+          <option value='us'>US</option>
+          <option value='uk'>UK</option>
+          <option value='france'>France</option>
+          <option value='norway'>Norway</option>
+        </select>
+      </div>
+    );
   }
 }
 
