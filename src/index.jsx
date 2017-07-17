@@ -4,21 +4,10 @@ import fetchJsonp from 'fetch-jsonp';
 import _ from 'lodash';
 
 import Canvas from './components/canvas';
+import stats from 'data/stats';
 
 import './styles/index.css';
 
-const DATA = [
-  {
-    country: 'UK',
-    board: 0.7,
-    exec: 0.1
-  },
-  {
-    country: 'France',
-    board: 0.8,
-    exec: 0.1
-  }
-];
 
 /**
  * Our main application
@@ -44,7 +33,7 @@ class App extends React.Component {
     if (width) {
       return (
         <div className='app'>
-          <Canvas width={width} height={height} />
+          <Canvas width={width} height={height} stats={stats} />
         </div>
       );
     } else {

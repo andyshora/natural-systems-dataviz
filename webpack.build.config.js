@@ -23,6 +23,11 @@ module.exports = {
       'node_modules',
       path.resolve(__dirname, 'src')
     ],
+    alias: {
+      components: path.resolve(__dirname, 'src/components'),
+      data: path.resolve(__dirname, 'data'),
+      utils: path.resolve(__dirname, 'src/utils')
+    },
     extensions: ['.js', '.jsx']
   },
   plugins: [

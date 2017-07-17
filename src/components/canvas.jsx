@@ -1,7 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
 
-let world = null;
+import './canvas.css';
+
+let worlds = [];
 /**
  * Main Canvas
  */
@@ -12,7 +14,7 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
 
-    const { width, height } = props;
+    const { width, height, stats } = props;
     this._handleCountryChange = this._handleCountryChange.bind(this);
 
     this.state = {
@@ -26,6 +28,7 @@ class Canvas extends React.Component {
   }
   _initWorld() {
     const { activeCountryKey } = this.state;
+    const { stats } = this.props;
 
     // the nodes representing lt and exec
     let positionsInLevels = [3, 10];
@@ -37,52 +40,42 @@ class Canvas extends React.Component {
     // probability of males and females targetting the levels (cumulative)
     // source: https://www.msci.com/documents/10199/04b6f646-d638-4878-9c61-4eb91748a82b
 
-    let stats = {
-      female: {
-        overall: [0.17, 1],
-        us: [0.18, 1],
-        uk: [0.247, 1],
-        norway: [0.375, 1],
-        france: [0.34, 1]
-      },
-      male: {
-        overall: [0.83, 1],
-        us: [0.82, 1],
-        uk: [0.753, 1],
-        norway: [0.625, 1],
-        france: [0.66, 1]
-      }
-    };
-
     // multid array to store targets
     let targets = _.map(positionsInLevels, () => []);
 
+    let _container = this._container;
+
     const system = Flora.System.setup(function() {
-      world = this.add('World', {
+      let world = this.add('World', {
+        el: _container,
         gravity: new Flora.Vector(),
         c: 0,
-        id: 'world'
+        id: 'world',
+        color: [255, 255, 255]
       });
+
+      const w = world.width;
+      const h = world.height;
 
       // create targets
       for (let i = 0; i < positionsInLevels.length; i++) {
         const level = i;
         const numNodesInThisLevel = positionsInLevels[level];
         for (let j = 0; j < numNodesInThisLevel; j++) {
-          const x = (j + 1) * (world.width / (numNodesInThisLevel + 1));
-          const y = (level + 1) * (world.height / (positionsInLevels.length + 1));
+          const x = (j + 1) * (w / (numNodesInThisLevel + 1));
+          const y = (level + 1) * (h / (positionsInLevels.length + 1));
           const target = this.add('Walker', {
             maxSpeed: 0,
             perlin: false,
             location: new Flora.Vector(x, y),
-            color: [9, 0, 0],
+            color: [0, 0, 0],
             borderColor: [255, 255, 255],
             borderWidth: 2,
             borderRadius: 100,
             borderStyle: 'solid',
-            opacity: 0.5,
-            width: world.width / (numNodesInThisLevel * 3),
-            height: world.width / (numNodesInThisLevel * 3)
+            opacity: 0.1,
+            width: w / (numNodesInThisLevel * 3),
+            height: w / (numNodesInThisLevel * 3)
           });
           targets[level].push(target);
         }
@@ -94,7 +87,7 @@ class Canvas extends React.Component {
 
         const male = k % 2 === 0;
         const genderKey = male ? 'male': 'female';
-        const color = male ? [0, 100, 255] : [255, 255, 0];
+        const color = male ? [0, 100, 255] : [255, 127, 80];
         const r = Math.random();
         const probs = stats[genderKey][activeCountryKey];
         let radius = 0;
@@ -118,7 +111,7 @@ class Canvas extends React.Component {
         this.add('Agent', {
           seekTarget: targets[targetLevel][targetIndex],
           motorSpeed: 0.5 + _.random(0, 0.5, true),
-          location: new Flora.Vector((world.width / 2) - 100 + _.random(0, 200), world.height - 100),
+          location: new Flora.Vector((w / 2) - 100 + _.random(0, 200), h - 100),
           color,
           borderRadius: 10,
           width: radius,
@@ -136,7 +129,6 @@ class Canvas extends React.Component {
     Flora.System.loop();
   }
   _handleCountryChange(e) {
-    Flora.System.remove(world);
 
     // this.setState({
     //   activeCountryKey: e.target.value
@@ -150,13 +142,14 @@ class Canvas extends React.Component {
     const { activeCountryKey } = this.state;
     return (
       <div>
+        <div className='container' ref={_container => { this._container = _container;}} />
         <p>Board patricipation in {activeCountryKey}.</p>
         <select onChange={this._handleCountryChange}>
-          <option value='overall'>Overall</option>
-          <option value='us'>US</option>
-          <option value='uk'>UK</option>
-          <option value='france'>France</option>
-          <option value='norway'>Norway</option>
+          <option selected={activeCountryKey === 'overall'} value='overall'>Overall</option>
+          <option selected={activeCountryKey === 'us'} value='us'>US</option>
+          <option selected={activeCountryKey === 'uk'} value='uk'>UK</option>
+          <option selected={activeCountryKey === 'france'} value='france'>France</option>
+          <option selected={activeCountryKey === 'norway'} value='norway'>Norway</option>
         </select>
       </div>
     );
