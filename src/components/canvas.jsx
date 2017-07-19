@@ -5,7 +5,7 @@ import './canvas.css';
 
 let world = null;
 let targets = [];
-const positionsInLevels = [3, 5, 25];
+const positionsInLevels = [3, 3, 3];
 /**
  * Main Canvas
  */
@@ -73,13 +73,13 @@ class Canvas extends React.Component {
       case 'board':
         targetLevel = 1;
         radius = 10;
-        startY = h * 0.75;
+        // startY = h * 0.75;
         break;
       case 'exco':
         targetLevel = 0;
         radius = 20;
         startX = w / 2;
-        startY = h / 2;
+        // startY = h / 2;
         break;
     }
 
@@ -94,7 +94,7 @@ class Canvas extends React.Component {
       const rand = Math.random() * 100;
       const male = rand > probs;
       const genderKey = male ? 'male': 'female';
-      const color = male ? [0, 100, 255] : [255, 255, 0];
+      const color = male ? [0, 100, 255] : [245, 85, 85];
       const targetsInLevel = positionsInLevels[targetLevel];
       const targetIndex = _.random(0, targetsInLevel - 1);
 
@@ -166,6 +166,7 @@ class Canvas extends React.Component {
           const x = (j + 1) * (w / (numNodesInThisLevel + 1));
           const y = (level + 1) * (h / (positionsInLevels.length + 1));
           // this = System
+          // the target zones
           const target = this.add('Walker', {
             maxSpeed: 0,
             perlin: false,
@@ -173,7 +174,7 @@ class Canvas extends React.Component {
             color: [255, 255, 255],
             borderColor: [255, 255, 255],
             borderWidth: 0,
-            borderRadius: 100,
+            borderRadius: 0,
             borderStyle: 'solid',
             opacity: 1,
             width: w / (numNodesInThisLevel * 3),
@@ -182,47 +183,6 @@ class Canvas extends React.Component {
           targets[level].push(target);
         }
       }
-
-      /*for (let k = 0; k < totalPositions * seekersPerTarget; k++) {
-
-        let targetLevel = -1;
-
-        const male = k % 2 === 0;
-        const genderKey = male ? 'male': 'female';
-        const color = male ? [0, 100, 255] : [255, 127, 80];
-        const r = Math.random();
-        const probs = stats[genderKey][activeCountryKey];
-        let radius = 0;
-
-        // decide where agent will go
-        if (r < probs[0]) {
-          targetLevel = 0;
-          radius = 20;
-        } else if (r < probs[1]) {
-          targetLevel = 1;
-          radius = 10;
-        }
-
-        const targetsInLevel = positionsInLevels[targetLevel];
-        const targetIndex = _.random(0, targetsInLevel - 1);
-
-        this.add('Agent', {
-          seekTarget: targets[targetLevel][targetIndex],
-          motorSpeed: 0.5 + _.random(0, 0.5, true),
-          location: new Flora.Vector((w / 2) - 100 + _.random(0, 200), h - 100),
-          color,
-          borderRadius: 10,
-          width: radius,
-          height: radius,
-          perlinAccelLow: -0.075 - _.random(0, 0.1, true),
-          perlinAccelHigh: 0.075 + _.random(0, 0.1, true),
-          flocking: true,
-          maxSteeringForce: 5 + _.random(0, 10, true),
-          cohesionStrength: 0.1,
-          separateStrength: 1.5
-        });
-      }*/
-
     });
     Flora.System.loop();
   }
@@ -251,19 +211,20 @@ class Canvas extends React.Component {
         </select>
         <nav>
           <button data-number={10} data-type='workers' onClick={this._addThings}>Add Workers</button>
-          <button data-number={10} data-type='board' onClick={this._addThings}>Add Board</button>
-          <button data-number={10} data-type='exco' onClick={this._addThings}>Add Exco</button>
+          <button data-number={5} data-type='board' onClick={this._addThings}>Add Board</button>
+          <button data-number={3} data-type='exco' onClick={this._addThings}>Add Exco</button>
         </nav>
         <div id='container' className='container' ref={_container => { this._container = _container;}}>
           <div className='text--exco'>Exco</div>
           <div className='text--board'>Board</div>
           <div className='text--workers'>Workers</div>
 
-          <div className='ratio--exco'><span className='m'>{counts.exco.male}</span> : {counts.exco.female}</div>
-          <div className='ratio--board'><span className='m'>{counts.board.male}</span> : {counts.board.female}</div>
-          <div className='ratio--workers'><span className='m'>{counts.workers.male}</span> : {counts.workers.female}</div>
+          <div className='ratio--exco'><span className='m'>{counts.exco.male}</span> : {counts.exco.female} ({~~(100 * counts.exco.female / (counts.exco.female + counts.exco.male)) || ''}%)</div>
+
+          <div className='ratio--board'><span className='m'>{counts.board.male}</span> : {counts.board.female} ({~~(100 * counts.board.female / (counts.board.female + counts.board.male)) || ''}%)</div>
+
+          <div className='ratio--workers'><span className='m'>{counts.workers.male}</span> : {counts.workers.female} ({~~(100 * counts.workers.female / (counts.workers.female + counts.workers.male)) || ''}%)</div>
         </div>
-        <p className='source'>Analysis based on 2015 annual reports of companies listed on each country’ main index: CAC40, FTSE100, FTSE MIB, AEX, BEL20, GDAX supervisory boards, OMX, OBX, McKinsey Women Matter report.</p>
       </div>
     );
   }

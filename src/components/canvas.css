@@ -7,32 +7,19 @@
 }
 
 .container {
-  width: 1000px;
-  height: 1000px;
-
-  border: 1px solid white;
+  width: 80%;
+  height: 80%;
 
   text-align: center;
 }
 
 .world {
   background-color: transparent !important;
-}
-
-.source {
-  position: absolute;
-  bottom: 0;
-  right: 10px;
-
-  font-size: 10px;
-  font-style: italic;
-  text-align: right;
-
-  color: black;
+  pointer-events: none;
 }
 
 .walker {
-  background-image: linear-gradient(135deg, rgb(100, 100, 100) 0%, rgb(0, 0, 0) 100%) !important;
+  background-image: linear-gradient(135deg, rgb(255, 255, 255) 0%, rgb(222, 222, 222) 100%) !important;
 }
 
 .text--board,
@@ -42,7 +29,7 @@
   top: 25%;
   left: 10px;
 
-  margin: -50px 0 0 0;
+  margin: -12px 0 0 -10%;
 
   color: white;
   text-transform: uppercase;
@@ -55,7 +42,9 @@
   top: 25%;
   right: 10px;
 
-  margin: -50px 0 0 0;
+  margin: -12px -10% 0 0;
+
+  font-size: 24px;
 
   color: rgb(255, 255, 0);
 }
@@ -63,15 +52,11 @@
 .ratio--board,
 .text--board {
   top: 50%;
-
-  margin: -50px 0 0 0;
 }
 
 .ratio--workers,
 .text--workers {
   top: 75%;
-
-  margin: -50px 0 0 0;
 }
 
 .m {

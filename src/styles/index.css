@@ -5,8 +5,8 @@
 body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 
-  color: white;
-  background: black;
+  color: black;
+  background: white;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -18,4 +18,21 @@ body {
 
   width: 100%;
   height: 100%;
+}
+
+button {
+  padding: 10px;
+}
+
+.source {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  z-index: 3;
+
+  font-size: 10px;
+  font-style: italic;
+  text-align: right;
+
+  color: black;
 }
