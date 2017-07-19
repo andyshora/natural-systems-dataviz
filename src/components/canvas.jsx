@@ -5,7 +5,7 @@ import './canvas.css';
 
 let world = null;
 let targets = [];
-const positionsInLevels = [3, 10, 25];
+const positionsInLevels = [3, 5, 25];
 /**
  * Main Canvas
  */
@@ -94,7 +94,7 @@ class Canvas extends React.Component {
       const rand = Math.random() * 100;
       const male = rand > probs;
       const genderKey = male ? 'male': 'female';
-      const color = male ? [94, 252, 232] : [253, 235, 113];
+      const color = male ? [0, 100, 255] : [255, 255, 0];
       const targetsInLevel = positionsInLevels[targetLevel];
       const targetIndex = _.random(0, targetsInLevel - 1);
 
@@ -241,9 +241,7 @@ class Canvas extends React.Component {
     return (
       <div className='canvas'>
         <p>Board participation in {activeCountryKey}.</p>
-        <p>Workers: {counts.workers.male} males, {counts.workers.female} females.</p>
-        <p>Board: {counts.board.male} males, {counts.board.female} females.</p>
-        <p>Exco: {counts.exco.male} males, {counts.exco.female} females.</p>
+
         <select defaultValue={activeCountryKey} onChange={this._handleCountryChange}>
           <option value='overall'>Overall</option>
           <option value='us'>US</option>
@@ -256,7 +254,15 @@ class Canvas extends React.Component {
           <button data-number={10} data-type='board' onClick={this._addThings}>Add Board</button>
           <button data-number={10} data-type='exco' onClick={this._addThings}>Add Exco</button>
         </nav>
-        <div id='container' className='container' ref={_container => { this._container = _container;}} />
+        <div id='container' className='container' ref={_container => { this._container = _container;}}>
+          <div className='text--exco'>Exco</div>
+          <div className='text--board'>Board</div>
+          <div className='text--workers'>Workers</div>
+
+          <div className='ratio--exco'><span className='m'>{counts.exco.male}</span> : {counts.exco.female}</div>
+          <div className='ratio--board'><span className='m'>{counts.board.male}</span> : {counts.board.female}</div>
+          <div className='ratio--workers'><span className='m'>{counts.workers.male}</span> : {counts.workers.female}</div>
+        </div>
         <p className='source'>Analysis based on 2015 annual reports of companies listed on each country’ main index: CAC40, FTSE100, FTSE MIB, AEX, BEL20, GDAX supervisory boards, OMX, OBX, McKinsey Women Matter report.</p>
       </div>
     );

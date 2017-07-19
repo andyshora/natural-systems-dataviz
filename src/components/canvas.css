@@ -34,3 +34,46 @@
 .walker {
   background-image: linear-gradient(135deg, rgb(100, 100, 100) 0%, rgb(0, 0, 0) 100%) !important;
 }
+
+.text--board,
+.text--exco,
+.text--workers {
+  position: fixed;
+  top: 25%;
+  left: 10px;
+
+  margin: -50px 0 0 0;
+
+  color: white;
+  text-transform: uppercase;
+}
+
+.ratio--board,
+.ratio--exco,
+.ratio--workers {
+  position: fixed;
+  top: 25%;
+  right: 10px;
+
+  margin: -50px 0 0 0;
+
+  color: rgb(255, 255, 0);
+}
+
+.ratio--board,
+.text--board {
+  top: 50%;
+
+  margin: -50px 0 0 0;
+}
+
+.ratio--workers,
+.text--workers {
+  top: 75%;
+
+  margin: -50px 0 0 0;
+}
+
+.m {
+  color: rgb(0, 100, 255);
+}
