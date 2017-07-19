@@ -60,7 +60,7 @@ class Canvas extends React.Component {
     const { stats } = this.props;
 
     let targetLevel = -1;
-    let radius = 5;
+    let radius = 8;
     const probs = stats[activeCountryKey][typeKey];
     let startX = (w / 2) - 100 + _.random(0, 200);
     let startY = h - 100;
@@ -83,8 +83,6 @@ class Canvas extends React.Component {
         break;
     }
 
-    radius = 5;
-
     let newAdditions = {
       male: 0,
       female: 0
@@ -96,8 +94,7 @@ class Canvas extends React.Component {
       const rand = Math.random() * 100;
       const male = rand > probs;
       const genderKey = male ? 'male': 'female';
-      const color = male ? [0, 100, 255] : [255, 127, 80];
-
+      const color = male ? [94, 252, 232] : [253, 235, 113];
       const targetsInLevel = positionsInLevels[targetLevel];
       const targetIndex = _.random(0, targetsInLevel - 1);
 
@@ -151,7 +148,7 @@ class Canvas extends React.Component {
     const system = Flora.System.setup(function() {
       // this = System
       world = this.add('World', {
-        el: document.getElementById('canvas'),
+        el: document.getElementById('container'),
         gravity: new Flora.Vector(),
         c: 0,
         id: 'world',
@@ -173,12 +170,12 @@ class Canvas extends React.Component {
             maxSpeed: 0,
             perlin: false,
             location: new Flora.Vector(x, y),
-            color: [0, 0, 0],
+            color: [255, 255, 255],
             borderColor: [255, 255, 255],
-            borderWidth: 2,
+            borderWidth: 0,
             borderRadius: 100,
             borderStyle: 'solid',
-            opacity: 0.1,
+            opacity: 1,
             width: w / (numNodesInThisLevel * 3),
             height: w / (numNodesInThisLevel * 3)
           });
@@ -242,7 +239,7 @@ class Canvas extends React.Component {
   render() {
     const { activeCountryKey, counts } = this.state;
     return (
-      <div>
+      <div className='canvas'>
         <p>Board participation in {activeCountryKey}.</p>
         <p>Workers: {counts.workers.male} males, {counts.workers.female} females.</p>
         <p>Board: {counts.board.male} males, {counts.board.female} females.</p>
@@ -259,7 +256,7 @@ class Canvas extends React.Component {
           <button data-number={10} data-type='board' onClick={this._addThings}>Add Board</button>
           <button data-number={10} data-type='exco' onClick={this._addThings}>Add Exco</button>
         </nav>
-        <div className='container' id='canvas' ref={_container => { this._container = _container;}} />
+        <div id='container' className='container' ref={_container => { this._container = _container;}} />
         <p className='source'>Analysis based on 2015 annual reports of companies listed on each country’ main index: CAC40, FTSE100, FTSE MIB, AEX, BEL20, GDAX supervisory boards, OMX, OBX, McKinsey Women Matter report.</p>
       </div>
     );
