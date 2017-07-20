@@ -5,7 +5,6 @@ import './canvas.css';
 
 let world = null;
 let targets = [];
-const positionsInLevels = [3, 3, 3];
 /**
  * Main Canvas
  */
@@ -16,7 +15,7 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
 
-    const { width, height, stats } = props;
+    const { width, height, stats, numOffices } = props;
     this._handleCountryChange = this._handleCountryChange.bind(this);
     this._addThings = this._addThings.bind(this);
     targets = [];
@@ -38,7 +37,8 @@ class Canvas extends React.Component {
           male: 0,
           female: 0
         }
-      }
+      },
+      positionsInLevels: [numOffices, numOffices, numOffices]
     };
   }
   componentDidMount() {
@@ -56,14 +56,14 @@ class Canvas extends React.Component {
       return;
     }
 
-    const { activeCountryKey } = this.state;
+    const { activeCountryKey, positionsInLevels } = this.state;
     const { stats } = this.props;
 
+    const probs = stats[activeCountryKey][typeKey];
     let targetLevel = -1;
     let radius = 8;
-    const probs = stats[activeCountryKey][typeKey];
     let startX = (w / 2) - 100 + _.random(0, 200);
-    let startY = h - 100;
+    let startY = h;
 
     // establish vertical layer group for agents to target
     switch (typeKey) {
@@ -73,13 +73,11 @@ class Canvas extends React.Component {
       case 'board':
         targetLevel = 1;
         radius = 10;
-        // startY = h * 0.75;
         break;
       case 'exco':
         targetLevel = 0;
         radius = 20;
         startX = w / 2;
-        // startY = h / 2;
         break;
     }
 
@@ -94,22 +92,21 @@ class Canvas extends React.Component {
       const rand = Math.random() * 100;
       const male = rand > probs;
       const genderKey = male ? 'male': 'female';
-      const color = male ? [0, 100, 255] : [245, 85, 85];
+      const color = male ? [0, 100, 255] : [255, 255, 51];
       const targetsInLevel = positionsInLevels[targetLevel];
       const targetIndex = _.random(0, targetsInLevel - 1);
 
-      Flora.System.add('Agent', {
+      BitShadowMachine.System.add('Agent', {
         seekTarget: targets[targetLevel][targetIndex],
-        motorSpeed: 0.5 + _.random(0, 0.5, true),
-        location: new Flora.Vector(startX, startY),
+        motorSpeed: 0.2 + _.random(0, 0.2, true),
+        location: new BitShadowMachine.Vector(startX, startY),
         color,
-        borderRadius: 10,
         width: radius,
         height: radius,
         perlinAccelLow: -0.075 - _.random(0, 0.1, true),
-        perlinAccelHigh: 0.075 + _.random(0, 0.1, true),
+        perlinAccelHigh: 0.025 + _.random(0, 0.05, true),
         flocking: true,
-        maxSteeringForce: 5 + _.random(0, 10, true),
+        maxSteeringForce: 1 + _.random(0, 1, true),
         cohesionStrength: 0.1,
         separateStrength: 1.5
       });
@@ -130,8 +127,8 @@ class Canvas extends React.Component {
     });
   }
   _initWorld() {
-    const { activeCountryKey } = this.state;
-    const { stats } = this.props;
+    const { activeCountryKey, positionsInLevels } = this.state;
+    const { stats, width, height } = this.props;
 
     // the nodes representing lt and exec
     const totalPositions = 8;
@@ -145,14 +142,22 @@ class Canvas extends React.Component {
 
     let _container = this._container;
 
-    const system = Flora.System.setup(function() {
+    BitShadowMachine.System.Classes = {
+      Walker: Walker,
+      Agent: Agent
+    };
+
+    const system = BitShadowMachine.System.setup(function() {
       // this = System
       world = this.add('World', {
         el: document.getElementById('container'),
-        gravity: new Flora.Vector(),
+        gravity: new BitShadowMachine.Vector(0, 0),
         c: 0,
         id: 'world',
-        color: [255, 255, 255]
+        color: [255, 255, 255],
+        width: width * 0.8,
+        height: height * 0.5,
+        resolution: 4
       });
 
       const w = world.width;
@@ -170,21 +175,15 @@ class Canvas extends React.Component {
           const target = this.add('Walker', {
             maxSpeed: 0,
             perlin: false,
-            location: new Flora.Vector(x, y),
-            color: [255, 255, 255],
-            borderColor: [255, 255, 255],
-            borderWidth: 0,
-            borderRadius: 0,
-            borderStyle: 'solid',
-            opacity: 1,
-            width: w / (numNodesInThisLevel * 3),
-            height: w / (numNodesInThisLevel * 3)
+            location: new BitShadowMachine.Vector(x, y),
+            color: [0, 0, 0],
+            opacity: 0
           });
           targets[level].push(target);
         }
       }
     });
-    Flora.System.loop();
+    BitShadowMachine.System.loop();
   }
   _handleCountryChange(e) {
 
@@ -198,6 +197,7 @@ class Canvas extends React.Component {
    */
   render() {
     const { activeCountryKey, counts } = this.state;
+    const { width, height } = this.props;
     return (
       <div className='canvas'>
         <p>Board participation in {activeCountryKey}.</p>
@@ -209,13 +209,13 @@ class Canvas extends React.Component {
           <option value='france'>France</option>
           <option value='norway'>Norway</option>
         </select>
-        <nav>
-          <button data-number={10} data-type='workers' onClick={this._addThings}>Add Workers</button>
+        <nav className='nav'>
+          <button data-number={20} data-type='workers' onClick={this._addThings}>Add Workers</button>
           <button data-number={5} data-type='board' onClick={this._addThings}>Add Board</button>
           <button data-number={3} data-type='exco' onClick={this._addThings}>Add Exco</button>
         </nav>
-        <div id='container' className='container' ref={_container => { this._container = _container;}}>
-          <div className='text--exco'>Exco</div>
+        <div className='text-container' style={{height: height * 0.5, width: width * 0.8}}>
+          <div className='text--exco'>Exec</div>
           <div className='text--board'>Board</div>
           <div className='text--workers'>Workers</div>
 
@@ -225,6 +225,7 @@ class Canvas extends React.Component {
 
           <div className='ratio--workers'><span className='m'>{counts.workers.male}</span> : {counts.workers.female} ({~~(100 * counts.workers.female / (counts.workers.female + counts.workers.male)) || ''}%)</div>
         </div>
+        <div id='container' className='container' ref={_container => { this._container = _container;}} />
       </div>
     );
   }

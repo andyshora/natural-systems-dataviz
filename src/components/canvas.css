@@ -13,6 +13,22 @@
   text-align: center;
 }
 
+.nav {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+
+  width: 300px;
+  margin: 0 0 0 -150px;
+}
+
+.worldContainer {
+  z-index: 2 !important;
+
+  background-color: transparent !important;
+  pointer-events: none;
+}
+
 .world {
   background-color: transparent !important;
   pointer-events: none;
@@ -26,10 +42,10 @@
 .text--exco,
 .text--workers {
   position: fixed;
-  top: 25%;
-  left: 10px;
+  top: 37%;
+  left: 20px;
 
-  margin: -12px 0 0 -10%;
+  margin: -12px 0 0;
 
   color: white;
   text-transform: uppercase;
@@ -39,10 +55,10 @@
 .ratio--exco,
 .ratio--workers {
   position: fixed;
-  top: 25%;
-  right: 10px;
+  top: 37%;
+  right: 20px;
 
-  margin: -12px -10% 0 0;
+  margin: -12px 0 0;
 
   font-size: 24px;
 
@@ -56,7 +72,7 @@
 
 .ratio--workers,
 .text--workers {
-  top: 75%;
+  top: 63%;
 }
 
 .m {

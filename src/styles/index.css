@@ -36,3 +36,8 @@ button {
 
   color: black;
 }
+
+.office {
+  fill: rgb(20, 20, 20);
+  stroke: rgb(100, 100, 100);
+}
