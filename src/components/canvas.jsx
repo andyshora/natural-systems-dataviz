@@ -16,7 +16,7 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props);
 
-    const { width, height, stats, offices } = props;
+    const { width, height, stats, offices, resolution } = props;
     this._handleCountryChange = this._handleCountryChange.bind(this);
     this._addThings = this._addThings.bind(this);
     this._targets = [];
@@ -62,7 +62,7 @@ class Canvas extends React.Component {
       const gender = male ? 'male': 'female';
       const person = new Person({
         gender,
-        company: _.random({ min: 0, max: offices.length - 1 }),
+        company: _.random(0, offices.length - 1),
         type,
         country
       });
@@ -87,7 +87,7 @@ class Canvas extends React.Component {
     }
 
     const { activeCountryKey } = this.state;
-    const { stats } = this.props;
+    const { stats, width, height } = this.props;
 
     // generate some random people
     const people = this._createPeople(num, typeKey, activeCountryKey);
@@ -113,7 +113,7 @@ class Canvas extends React.Component {
       BitShadowMachine.System.add('Agent', {
         seekTarget: this._targets[p.company][targetLevel],
         motorSpeed: 0.2 + _.random(0, 0.2, true),
-        location: new BitShadowMachine.Vector(0, 0),
+        location: new BitShadowMachine.Vector(-50, height * 0.8),
         color: p.color,
         width: radius,
         height: radius,
@@ -142,7 +142,7 @@ class Canvas extends React.Component {
   }
   _initWorld() {
     const { activeCountryKey } = this.state;
-    const { stats, width, height, offices } = this.props;
+    const { stats, width, height, offices, resolution } = this.props;
 
     let _container = this._container;
     this._targets = [];
@@ -164,7 +164,7 @@ class Canvas extends React.Component {
         color: [255, 255, 255],
         width: width,
         height: height,
-        resolution: 1
+        resolution
       });
 
       const w = world.width;
@@ -189,7 +189,7 @@ class Canvas extends React.Component {
           const target = this.add('Walker', {
             maxSpeed: 0,
             perlin: false,
-            location: new BitShadowMachine.Vector(walkerPosition[0], walkerPosition[1]),
+            location: new BitShadowMachine.Vector(walkerPosition[0] / resolution, walkerPosition[1] / resolution),
             color: [0, 255, 0],
             opacity: 0
           });
