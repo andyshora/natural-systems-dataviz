@@ -38,7 +38,7 @@ class Canvas extends React.Component {
           female: 0
         }
       },
-      positionsInLevels: [numOffices, numOffices, numOffices]
+      positionsOfOfficeLevels: [numOffices, numOffices, numOffices]
     };
   }
   componentDidMount() {
@@ -56,7 +56,7 @@ class Canvas extends React.Component {
       return;
     }
 
-    const { activeCountryKey, positionsInLevels } = this.state;
+    const { activeCountryKey, positionsOfOfficeLevels } = this.state;
     const { stats } = this.props;
 
     const probs = stats[activeCountryKey][typeKey];
@@ -93,7 +93,7 @@ class Canvas extends React.Component {
       const male = rand > probs;
       const genderKey = male ? 'male': 'female';
       const color = male ? [0, 100, 255] : [255, 255, 51];
-      const targetsInLevel = positionsInLevels[targetLevel];
+      const targetsInLevel = positionsOfOfficeLevels[targetLevel];
       const targetIndex = _.random(0, targetsInLevel - 1);
 
       BitShadowMachine.System.add('Agent', {
@@ -127,7 +127,7 @@ class Canvas extends React.Component {
     });
   }
   _initWorld() {
-    const { activeCountryKey, positionsInLevels } = this.state;
+    const { activeCountryKey, positionsOfOfficeLevels } = this.state;
     const { stats, width, height } = this.props;
 
     // the nodes representing lt and exec
@@ -138,7 +138,7 @@ class Canvas extends React.Component {
     // source: https://www.msci.com/documents/10199/04b6f646-d638-4878-9c61-4eb91748a82b
 
     // multid array to store targets
-    targets = _.map(positionsInLevels, () => []);
+    targets = _.map(positionsOfOfficeLevels, () => []);
 
     let _container = this._container;
 
@@ -164,12 +164,12 @@ class Canvas extends React.Component {
       const h = world.height;
 
       // create targets
-      for (let i = 0; i < positionsInLevels.length; i++) {
+      for (let i = 0; i < positionsOfOfficeLevels.length; i++) {
         const level = i;
-        const numNodesInThisLevel = positionsInLevels[level];
+        const numNodesInThisLevel = positionsOfOfficeLevels[level];
         for (let j = 0; j < numNodesInThisLevel; j++) {
           const x = (j + 1) * (w / (numNodesInThisLevel + 1));
-          const y = (level + 1) * (h / (positionsInLevels.length + 1));
+          const y = (level + 1) * (h / (positionsOfOfficeLevels.length + 1));
           // this = System
           // the target zones
           const target = this.add('Walker', {
