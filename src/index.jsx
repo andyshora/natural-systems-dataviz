@@ -24,7 +24,7 @@ class App extends React.Component {
 
     this._setDimensions = this._setDimensions.bind(this);
 
-    window.onresize = this._setDimensions;
+    window.onresize = _.debounce(this._setDimensions, 100);
 
   }
   _setDimensions() {
@@ -32,13 +32,12 @@ class App extends React.Component {
       this.setState({
         width: window.innerWidth,
         height: window.innerHeight
+      }, () => {
+        this._canvas.updateTargetPositions(this._getOffices());
       });
     }
   }
-  componentDidMount() {
-    this._setDimensions();
-  }
-  render() {
+  _getOffices() {
     const { width, height } = this.state;
 
     const CHUNK_WIDTH = width / (NUM_OFFICES + 1);
@@ -54,6 +53,16 @@ class App extends React.Component {
         height: 300
       }
     });
+
+    return offices;
+  }
+  componentDidMount() {
+    this._setDimensions();
+  }
+  render() {
+    const { width, height } = this.state;
+
+    const offices = this._getOffices();
 
     return (
       <div className='app' ref={_app => {this._app = _app;}}>
@@ -80,7 +89,7 @@ class App extends React.Component {
               );
             })}
           </svg>
-          <Canvas width={width} height={height} stats={stats} offices={offices} resolution={RESOLUTION} />
+          <Canvas ref={canvas => {this._canvas = canvas;}} width={width} height={height} stats={stats} offices={offices} resolution={RESOLUTION} />
           <p className='source'>Analysis based on 2015 annual reports of companies listed on each country’ main index: CAC40, FTSE100, FTSE MIB, AEX, BEL20, GDAX supervisory boards, OMX, OBX, McKinsey Women Matter report.</p>
         </div>)
       }

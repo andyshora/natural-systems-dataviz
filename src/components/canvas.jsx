@@ -32,6 +32,33 @@ class Canvas extends React.Component {
   componentDidMount() {
     this._initWorld();
   }
+  /**
+   * Target positions have changed, probably in response to a window resize
+   * Move the Walkers, the Agents should follow
+   * @param  {Object} offices Array of office objects
+   * @return {void}
+   */
+  updateTargetPositions(offices) {
+    console.log('updateTargetPositions', offices);
+
+    const { resolution } = this.props;
+
+    // modify targets
+    for (let i = 0; i < offices.length; i++) {
+
+      const office = offices[i];
+
+      // we need to create 3 Walkers per office
+      // representing the different levels in the heirarchy
+      for (let level = 0; level < 3; level++) {
+        const xOffset = office.width / 2;
+        const yOffset = (level + 0.5) * (office.height / 3); // offset y position for each level
+        const walkerPosition = [office.position[0] + xOffset, office.position[1] + yOffset];
+        // console.log(`Adding office level ${level} at ${walkerPosition[0]},${walkerPosition[1]}`);
+        let target = this._targets[i][level].location = new BitShadowMachine.Vector(walkerPosition[0] / resolution, walkerPosition[1] / resolution);
+      }
+    }
+  }
   _getNewCompanies(num) {
     return _.times(num).map(() => {
       return {
@@ -191,7 +218,7 @@ class Canvas extends React.Component {
             perlin: false,
             location: new BitShadowMachine.Vector(walkerPosition[0] / resolution, walkerPosition[1] / resolution),
             color: [0, 255, 0],
-            opacity: 0
+            opacity: 1
           });
           _targets[i].push(target);
         }
