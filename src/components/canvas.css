@@ -15,11 +15,22 @@
 
 .nav {
   position: fixed;
-  bottom: 50px;
+  bottom: 80px;
   left: 50%;
 
   width: 300px;
   margin: 0 0 0 -150px;
+}
+
+.message {
+  position: fixed;
+  bottom: 10px;
+
+  width: 100%;
+
+  text-align: center;
+
+  color: white;
 }
 
 .worldContainer {
